@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Anonymizer </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #0f172a;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links a:hover {
+            color: #0f172a;
+        }
+
+        .main-container {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-section {
+            padding: 5rem 2rem 3rem;
+            text-align: center;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 3rem;
+        }
+
+        .upload-section {
+            flex: 1;
+            padding: 4rem 2rem;
+            background: #f8fafc;
+        }
+
+        .upload-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 3rem;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: -0.025em;
+        }
+
+        .section-subtitle {
+            color: #64748b;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.5rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            text-align: center;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #94a3b8;
+            background: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #64748b;
+            background: #e2e8f0;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #64748b;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: #475569;
+            transform: scale(1.05);
+        }
+
+        .upload-text {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .upload-hint {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-features {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #0f172a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1rem 0.5rem;
+            font-family: inherit;
+            letter-spacing: -0.01em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .btn:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #0f172a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        .loading-text {
+            color: #475569;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 2.5rem;
+            padding: 2rem;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .preview {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: #374151;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            color: #166534;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-weight: 500;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #475569;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .download-btn {
+            background: #166534;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #15803d;
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #475569;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            background: #0f172a;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.6rem;
+        }
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #0f172a;
+        }
+
+        .footer-copyright {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .main-container {
+                margin-top: 120px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .upload-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .upload-area {
+                padding: 3rem 1.5rem;
+            }
+            
+            .upload-icon {
+                font-size: 3.5rem;
+            }
+            
+            .upload-features {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .security-badges {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .contact-section {
+            padding: 80px 0;
+        }
+
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff; 
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-info p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            color: #475569;
+        }
+
+        .contact-info p i {
+            font-size: 1.5rem;
+            color: #0f172a; 
+        }
+
+        .contact-info p i.bx-mail-send {
+            color: #ff5733;
+        }
+
+        .contact-info p i.bxs-phone-call {
+            color: #28a745;
+        }
+
+        .contact-info p i.bx-map {
+            color: #ffc107;
+        }
+
+        .contact-info a {
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+            color: #1e293b;
+        }
+
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .social-links a {
+            font-size: 2rem;
+            color: #0f172a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ff5733;
+        }
+
+        .social-links a i.bxl-linkedin-square {
+            color: #0077b5;
+        }
+
+        .social-links a i.bxl-github {
+            color: #333;
+        }
+
+        .social-links a i.bxl-instagram {
+            color: #e1306c;
+        }
+
+        .social-links a i.bxl-twitter {
+            color: #1da1f2;
+        }
+
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .contact-form button {
+            width: auto;
+            padding: 12px 30px;
+            cursor: pointer;
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                flex-direction: column;
+            }
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .step {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #0f172a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .step-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <div class="logo-icon">🔒</div>
+                File Anonymizer 
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#upload-section">Features</a></li>
+                <li><a href="#privacy">Privacy Policy</a></li>
+                <li><a href="#contact">Support</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <section class="hero-section" id="home">
+            <div class="hero-content">
+                <h1 class="hero-title">Intelligent Document Anonymization</h1>
+                <p class="hero-subtitle">Secure, Fast, and Privacy-Focused File Processing</p>
+                <p class="hero-description">
+                    Automatically detect and remove sensitive information such as names, emails, and phone numbers from your documents. 
+                    Ideal for compliance, data sharing, research, recruitment, and any scenario where confidentiality is essential.
+                </p>
+                
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Upload file</div>
+                        <div class="step-description">Upload your PDF file securely to our platform</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Auto Anonymize</div>
+                        <div class="step-description">AI automatically detects and removes personal data</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Download Result</div>
+                        <div class="step-description">Get your anonymized file in PDF format</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="upload-section" class="upload-section">
+            <div class="upload-container">
+                <h2 class="section-title">Upload Your file</h2>
+                <p class="section-subtitle">
+                    Your document is processed securely with enterprise-grade encryption. We automatically detect and anonymize 
+                    names, email addresses, and phone numbers .
+                </p>
+                
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">Click to upload or drag and drop </div>
+                    <div class="upload-hint">Supports only PDF files up to 2MB</div>
+                    
+                    <div class="upload-features">
+                        <div class="feature">
+                            <div class="feature-icon">AI</div>
+                            Smart Detection
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🔄</div>
+                            Batch Processing
+                        </div>
+                        
+                        <div class="feature">
+                            <div class="feature-icon">⚡</div>
+                            Instant Results
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="file" id="file-input" accept=".pdf">
+                
+                <div class="file-info" id="file-info">
+                    <strong>Selected file : </strong> <span id="file-name"></span>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="btn" id="process-btn" onclick="processFile()" disabled>
+                        Process 
+                    </button>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Processing your file securely...</div>
+                </div>
+                
+                <div class="error-message" id="error-message"></div>
+                
+                <div class="result" id="result">
+                    <div class="success-message">
+                        <span>✅</span> File processed successfully
+                    </div>
+                    <p><strong>Preview of anonymized content:</strong></p>
+                    <div class="preview" id="preview"></div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn download-btn" id="download-btn" onclick="downloadFile()">
+                            Download Anonymized File
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetForm()">
+                            Process Another File
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section id="contact" class="contact-section">
+            <div class="container">
+                <h2 class="section-title">Support</h2>
+                <p class="section-subtitle">Have questions or need assistance? Feel free to reach out to us!</p>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <p><i class='bx bx-mail-send'></i> Email: <a href="mailto:hishamulhakeem4@gmail.com">hishamulhakeem4@gmail.com</a></p>
+                        <p><i class='bx bxs-phone-call'></i> Phone: +91 91130*****</p>
+                        <p><i class='bx bx-map'></i> Location : India</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/hisham-ul-hakeem/" target="_blank"><i class='bx bxl-linkedin-square'></i></a>
+                            <a href="https://github.com/hishamulhakeem" target="_blank"><i class='bx bxl-github'></i></a>
+                            <a href="https://www.instagram.com/mx_hisham_/" target="_blank"><i class='bx bxl-instagram'></i></a>
+                            <a href="https://twitter.com/hishamhakeem" target="_blank"><i class='bx bxl-twitter'></i></a>
+                        </div>
+                        <p class="footer-copyright" style="margin-top: 20px; border-top: none; padding-top: 0;">
+                            © 2025 File Anonymizer. All rights reserved.
+                        </p>
+                    </div>
+                    <div class="contact-form">
+                        <form action="https://api.web3forms.com/submit" method="POST">
+                            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                            <input type="text" name="Name" placeholder="Your Name" required>
+                            <input type="email" name="email" placeholder="Your Email" required>
+                            <textarea name="Message" rows="6" placeholder="Your Message"></textarea>
+                            <button type="submit" class="btn primary-btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <script>
+        let selectedFile = null;
+        let downloadUrl = null;
+
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelection(file);
+            }
+        });
+
+        const uploadArea = document.querySelector('.upload-area');
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/pdf') {
+                    document.getElementById('file-input').files = files;
+                    handleFileSelection(file);
+                } else {
+                    showError('Please select a PDF file only.');
+                }
+            }
+        });
+
+        function handleFileSelection(file) {
+            if (file.type !== 'application/pdf') {
+                showError('Please select a PDF file only.');
+                return;
+            }
+
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File size must be less than 16MB.');
+                return;
+            }
+
+            selectedFile = file;
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-info').style.display = 'block';
+            document.getElementById('process-btn').disabled = false;
+            hideError();
+            hideResult();
+        }
+
+        async function processFile() {
+            if (!selectedFile) {
+                showError('Please select a file first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            document.getElementById('process-btn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            hideError();
+            hideResult();
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('preview').textContent = result.preview_text;
+                    downloadUrl = result.download_url;
+                    document.getElementById('result').style.display = 'block';
+                } else {
+                    showError(result.error || 'An error occurred while processing the file.');
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('process-btn').disabled = false;
+            }
+        }
+
+        function downloadFile() {
+            if (downloadUrl) {
+                window.location.href = downloadUrl;
+            }
+        }
+
+        function resetForm() {
+            selectedFile = null;
+            downloadUrl = null;
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-info').style.display = 'none';
+            document.getElementById('process-btn').disabled = true;
+            hideError();
+            hideResult();
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.hero-content, .upload-container');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    section.style.transition = 'all 0.6s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
